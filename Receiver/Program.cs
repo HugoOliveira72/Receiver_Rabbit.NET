@@ -10,7 +10,7 @@ public class Receive
         using (var connection = factory.CreateConnection())
         using (var channel = connection.CreateModel())
         {
-            channel.QueueDeclare(queue: "hello",
+            channel.QueueDeclare(queue: "qFirst",
                                  durable: false,
                                  exclusive: false,
                                  autoDelete: false,
@@ -18,12 +18,13 @@ public class Receive
 
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += (model, ea) =>
+
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
                 Console.WriteLine(" [x] Received {0}", message);
             };
-            channel.BasicConsume(queue: "hello",
+            channel.BasicConsume(queue: "qFirst",
                                  autoAck: true,
                                  consumer: consumer);
 
