@@ -20,12 +20,19 @@ public class Receive
             consumer.Received += (model, ea) =>
 
             {
-                var body = ea.Body.ToArray();
-                var message = Encoding.UTF8.GetString(body);
-                Console.WriteLine(" [x] Received {0}", message);
+                try 
+                {
+                    var body = ea.Body.ToArray();
+                    var message = Encoding.UTF8.GetString(body);
+                    Console.WriteLine(" [x] Received {0}", message);
+                } catch (Exception e)
+                {
+                    channel.BasicNack(ea.DeliveryTag, false, false);
+                }
+
             };
             channel.BasicConsume(queue: "qFirst",
-                                 autoAck: true,
+                                 autoAck: false,
                                  consumer: consumer);
 
             Console.WriteLine(" Press [enter] to exit.");
